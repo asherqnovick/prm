@@ -14,7 +14,7 @@ prm
 
 To uninstall run
 ```
-sudo rm /usr/local/bin/prm
+curl -sS https://raw.githubusercontent.com/asherqnovick/prm/main/install/uninstall.sh | bash
 ```
 
 ## Usage ##
