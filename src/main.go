@@ -71,10 +71,10 @@ func main() {
 	paths := flag.Bool("paths", false, "open paths.txt file")
 	sort := flag.Bool("s", false, "sort results by size (automatically displays paths)")
 	flag.Parse()
-
 	args := flag.Args()
 
 	loadConfig()
+
 	if *open {
 		openFoldersInExplorer()
 		return
@@ -83,8 +83,10 @@ func main() {
 		openPathsFile()
 		return
 	}
+
 	var pp Plugins = scanPaths()
 	pp = searchPlugins(strings.Join(args, " "), pp)
+
 	if *format != "" {
 		str := *format
 		pp = searchFormat(str, pp)
@@ -133,7 +135,7 @@ func loadConfig() {
 	if os.IsNotExist(err) {
 		os.Mkdir(CONFIG_PATH, 0755)
 	}
-	file, err := os.Open(PATHS_PATH)
+	_, err = os.Stat(PATHS_PATH)
 	if os.IsNotExist(err) {
 		file, _ := os.Create(PATHS_PATH)
 		switch runtime.GOOS {
@@ -146,6 +148,11 @@ func loadConfig() {
 				fmt.Fprintf(file, "%s\n", path)
 			}
 		}
+	}
+	file, err := os.Open(PATHS_PATH)
+	if err != nil {
+		fmt.Println("error creating paths file, unable to continue")
+		return
 	}
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
